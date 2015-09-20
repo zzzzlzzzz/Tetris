@@ -75,7 +75,7 @@ namespace GameSpace
 				}
 				else
 				{
-					playerBlock.reset(new Triangle(dre, 1, 0));
+					playerBlock.reset(getPrimitive(dre, 1, 0));
 				}
 			}
 			gameField.erasing();
@@ -84,7 +84,7 @@ namespace GameSpace
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doWork()
 	{
-		playerBlock.reset(new Triangle(dre, 1, 0));
+		playerBlock.reset(getPrimitive(dre, 1, 0));
 		gameField = Field(10, 10);
 
 		Clock gameTime;

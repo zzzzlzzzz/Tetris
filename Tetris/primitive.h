@@ -21,7 +21,7 @@ namespace GameSpace
 		static void drawBlock(sf::RenderWindow& render, int positionX, int positionY, BlockColor color);
 		//////////////////////////////////////////////////////////////////////////
 		Primitive(const std::vector<std::vector<bool>>& tpl, std::default_random_engine& dre, int positionX, int positionY);
-		virtual void doDraw(sf::RenderWindow& render) = 0;
+		void doDraw(sf::RenderWindow& render);
 		bool doLogic(Field& field);
 		void rotRight(Field& field);
 		void rotLeft(Field& field);
@@ -49,22 +49,45 @@ namespace GameSpace
 	{
 	public:
 		Point(std::default_random_engine& dre, int positionX, int positionY);
-		virtual void doDraw(sf::RenderWindow& render) override;
 	};
 
 	class Pe :public Primitive
 	{
 	public:
 		Pe(std::default_random_engine& dre, int positionX, int positionY);
-		virtual void doDraw(sf::RenderWindow& render) override;
 	};
 
 	class Triangle :public Primitive
 	{
 	public:
 		Triangle(std::default_random_engine& dre, int positionX, int positionY);
-		virtual void doDraw(sf::RenderWindow& render) override;
 	};
+
+	class Te :public Primitive
+	{
+	public:
+		Te(std::default_random_engine& dre, int positionX, int positionY);
+	};
+
+	class Block :public Primitive
+	{
+	public:
+		Block(std::default_random_engine& dre, int positionX, int positionY);
+	};
+
+	class ZigZag :public Primitive
+	{
+	public:
+		ZigZag(std::default_random_engine& dre, int positionX, int positionY);
+	};
+
+	class Line :public Primitive
+	{
+	public:
+		Line(std::default_random_engine& dre, int positionX, int positionY);
+	};
+
+	Primitive* getPrimitive(std::default_random_engine& dre, int positionX, int positionY);
 }
 
 #endif // !PRIMITIVE_H

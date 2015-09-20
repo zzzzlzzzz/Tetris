@@ -33,14 +33,14 @@ namespace GameSpace
 	//////////////////////////////////////////////////////////////////////////
 	bool Field::isEmpty(int x, int y)
 	{
-		if (y >= 0 && x >= 0 && y < field.size() && x < field[y].size())
+		if (y >= 0 && x >= 0 && y < static_cast<int>(field.size()) && x < static_cast<int>(field[y].size()))
 			return field[y][x] == Primitive::BlockColor::EMPTY;
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Field::setColor(int x, int y, Primitive::BlockColor color)
 	{
-		if (y >= 0 && x >= 0 && y < field.size() && x < field[y].size())
+		if (y >= 0 && x >= 0 && y < static_cast<int>(field.size()) && x < static_cast<int>(field[y].size()))
 			field[y][x] = color;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -350,11 +350,7 @@ namespace GameSpace
 	{
 
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Point::doDraw(sf::RenderWindow& render)
-	{
-		Primitive::doDraw(render);
-	}
+
 	//////////////////////////////////////////////////////////////////////////
 
 	Pe::Pe(std::default_random_engine& dre, int positionX, int positionY)
@@ -364,13 +360,6 @@ namespace GameSpace
 					dre, positionX, positionY)
 	{
 
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-
-	void Pe::doDraw(sf::RenderWindow& render)
-	{
-		Primitive::doDraw(render);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -386,9 +375,71 @@ namespace GameSpace
 
 	//////////////////////////////////////////////////////////////////////////
 
-	void Triangle::doDraw(sf::RenderWindow& render)
+	Te::Te(std::default_random_engine& dre, int positionX, int positionY)
+		:Primitive({	{ true, true, true },
+						{ false, true, false },
+						{ false, true, false } },
+					dre, positionX, positionY)
 	{
-		Primitive::doDraw(render);
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	Block::Block(std::default_random_engine& dre, int positionX, int positionY)
+		:Primitive(	{	{ true, true, false },
+						{ true, true, false },
+						{ false, false, false } },
+						dre, positionX, positionY)
+	{
+	
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	ZigZag::ZigZag(std::default_random_engine& dre, int positionX, int positionY)
+		:Primitive({	{ false, true, true },
+						{ true, true, false },
+						{ false, false, false } },
+						dre, positionX, positionY)
+	{
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	Line::Line(std::default_random_engine& dre, int positionX, int positionY)
+		:Primitive({	{ true, true, true },
+						{ false, false, false },
+						{ false, false, false } },
+						dre, positionX, positionY)
+	{
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	Primitive* getPrimitive(std::default_random_engine& dre, int positionX, int positionY)
+	{
+		switch (uniform_int_distribution<int>(0, 6)(dre))
+		{
+		case 0:
+			return new Point(dre, positionX, positionY);
+		case 1:
+			return new Pe(dre, positionX, positionY);
+		case 2:
+			return new Triangle(dre, positionX, positionY);
+		case 3:
+			return new Te(dre, positionX, positionY);
+		case 4:
+			return new Block(dre, positionX, positionY);
+		case 5:
+			return new ZigZag(dre, positionX, positionY);
+		case 6:
+			return new Line(dre, positionX, positionY);
+		default:
+			return nullptr;
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////
