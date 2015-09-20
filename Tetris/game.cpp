@@ -34,6 +34,16 @@ namespace GameSpace
 					if (playerBlock)
 						playerBlock->rotLeft(gameField);
 				}
+				else if (evItem.key.code == Keyboard::Right)
+				{
+					if (playerBlock)
+						playerBlock->moveRight(gameField);
+				}
+				else if (evItem.key.code == Keyboard::Left)
+				{
+					if (playerBlock)
+						playerBlock->moveLeft(gameField);
+				}
 			}
 		}
 	}
@@ -58,6 +68,7 @@ namespace GameSpace
 		{
 			if (playerBlock->doLogic(gameField))
 			{
+				// есть касание
 				if (gameField.isFinal())
 				{
 					int i = 5;
@@ -67,19 +78,21 @@ namespace GameSpace
 					playerBlock.reset(new Triangle(dre, 1, 0));
 				}
 			}
+			gameField.erasing();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doWork()
 	{
 		playerBlock.reset(new Triangle(dre, 1, 0));
-		gameField = Field(10, 20);
+		gameField = Field(10, 10);
 
 		Clock gameTime;
 
 		while (mainWindow.isOpen())
 		{
-			if (gameTime.getElapsedTime().asSeconds() > 1)
+			if (gameTime.getElapsedTime().asSeconds() > 1 || 
+				(gameTime.getElapsedTime().asMilliseconds() > 50 && Keyboard::isKeyPressed(Keyboard::Down)))
 			{
 				doLogic();
 				gameTime.restart();

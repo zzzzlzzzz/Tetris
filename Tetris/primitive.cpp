@@ -57,6 +57,30 @@ namespace GameSpace
 		}
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Field::erasing()
+	{
+		for (size_t y = 0; y < field.size() - 1; y++)
+		{
+			bool haveLine = true;
+			for (size_t x = 1; x < field[y].size() - 1 && haveLine; x++)
+			{
+				if (field[y][x] == Primitive::BlockColor::EMPTY)
+					haveLine = false;
+			}
+			if (haveLine)
+			{
+				for (int iy = static_cast<int>(y); iy > 0; iy--)
+				{
+					for (size_t x = 1; x < field[y].size() - 1; x++)
+					{
+						field[iy][x] = field[iy - 1][x];
+						field[iy - 1][x] = Primitive::BlockColor::EMPTY;
+					}
+				}
+			}
+		}
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	Primitive::Primitive(const std::vector<std::vector<bool>>& tpl, std::default_random_engine& dre, int positionX, int positionY)
@@ -280,7 +304,6 @@ namespace GameSpace
 			
 			if (++state > 3)
 				state = 0;
-
 		}
 
 		if (haveDownBorder(field))
@@ -289,8 +312,35 @@ namespace GameSpace
 			normalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-
-
+	void Primitive::moveRight(Field& field)
+	{
+		bool moveAllow = true;
+		for (size_t y = 0; y < scheme.size() && moveAllow; y++)
+		{
+			for (int x = static_cast<int>(scheme[y].size()) - 1; x >= 0 && moveAllow; x--)
+			{
+				if (scheme[y][x] != BlockColor::EMPTY && !field.isEmpty(posX + x + 1, posY + y))
+					moveAllow = false;
+			}
+		}
+		if (moveAllow)
+			++posX;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Primitive::moveLeft(Field& field)
+	{
+		bool moveAllow = true;
+		for (size_t y = 0; y < scheme.size() && moveAllow; y++)
+		{
+			for (size_t x = 0; x < scheme[y].size() && moveAllow; x++)
+			{
+				if (scheme[y][x] != BlockColor::EMPTY && !field.isEmpty(posX + x - 1, posY + y))
+					moveAllow = false;
+			}
+		}
+		if (moveAllow)
+			--posX;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Point::Point(std::default_random_engine& dre, int positionX, int positionY) 
 		:Primitive({ { true, false, false },

@@ -25,7 +25,8 @@ namespace GameSpace
 		bool doLogic(Field& field);
 		void rotRight(Field& field);
 		void rotLeft(Field& field);
-		//void moveRight(Field& field);
+		void moveRight(Field& field);
+		void moveLeft(Field& field);
 	protected:
 		std::vector<std::vector<BlockColor>> scheme;
 		int posX, posY, state;
@@ -41,6 +42,7 @@ namespace GameSpace
 		bool isEmpty(int x, int y);
 		void setColor(int x, int y, Primitive::BlockColor color);
 		bool isFinal();
+		void erasing();
 	};
 
 	class Point:public Primitive
