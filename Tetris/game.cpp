@@ -11,17 +11,17 @@ namespace GameSpace
 		:	dre(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())),
 			mainWindow(VideoMode(width, height), "Tetris", fullScreen ? Style::Fullscreen : Style::Default),
 			mainView(FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))),
-			gameMenu("resource\\gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), gameManager(GameState::MENU)
+			gameMenu("resource/gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), gameManager(GameState::MENU)
 	{
 		mainWindow.setFramerateLimit(60);
 		//////////////////////////////////////////////////////////////////////////
-		if (!backgroundTexture.loadFromFile("resource\\background.png"))
-			throw runtime_error("GameSpace::Game::Game !backgroundTexture.loadFromFile(\"resource\\background.png\")");
+		if (!backgroundTexture.loadFromFile("resource/background.png"))
+			throw runtime_error("GameSpace::Game::Game !backgroundTexture.loadFromFile(\"resource/background.png\")");
 		backgroundSprite.setTexture(backgroundTexture);
 		backgroundSprite.scale(Vector2f(width / 640.0f, height / 480.0f));
 		//////////////////////////////////////////////////////////////////////////
-		if(!infoFont.loadFromFile("resource\\gamefont.ttf"))
-			throw runtime_error("GameSpace::Game::Game !infoFont.loadFromFile(\"resource\\gamefont.ttf\")");
+		if(!infoFont.loadFromFile("resource/gamefont.ttf"))
+			throw runtime_error("GameSpace::Game::Game !infoFont.loadFromFile(\"resource/gamefont.ttf\")");
 
 		loseText.setFont(infoFont);
 		loseText.setString("Game Over");
