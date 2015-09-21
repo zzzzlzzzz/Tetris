@@ -93,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
-    <ClInclude Include="gamemanager.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="primitive.h" />
   </ItemGroup>

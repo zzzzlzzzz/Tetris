@@ -11,7 +11,7 @@ namespace GameSpace
 		:	dre(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())),
 			mainWindow(VideoMode(width, height), "Tetris", fullScreen ? Style::Fullscreen : Style::Default),
 			mainView(FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))),
-			gameMenu("resource\\gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0)
+			gameMenu("resource\\gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), gameManager(GameState::MENU)
 	{
 		mainWindow.setFramerateLimit(60);
 		//////////////////////////////////////////////////////////////////////////
@@ -36,10 +36,15 @@ namespace GameSpace
 		pauseText.setStyle(Text::Bold);
 
 		scoreText.setFont(infoFont);
-		scoreText.setString("Score:\n"+to_string(score));
 		scoreText.setCharacterSize(20);
 		scoreText.setColor(Color(0xCC, 0x00, 0x33));
 		scoreText.setStyle(Text::Bold);
+		updateScore();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::updateScore()
+	{
+		scoreText.setString("Score:\n" + to_string(score));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doEvent()
@@ -50,7 +55,7 @@ namespace GameSpace
 			if (evItem.type == Event::Closed)
 				mainWindow.close();
 
-			if (manager.getState() == GameManager::GameState::PLAY)
+			if (gameManager == GameState::PLAY)
 			{
 				if (playerBlock)
 				{
@@ -65,19 +70,19 @@ namespace GameSpace
 						else if (evItem.key.code == Keyboard::Left)
 							playerBlock->moveLeft(gameField);
 						else if (evItem.key.code == Keyboard::Pause)
-							manager.setState(GameManager::GameState::PAUSE);
+							gameManager = GameState::PAUSE;
 						else if (evItem.key.code == Keyboard::Escape)
-							manager.setState(GameManager::GameState::MENU);
+							gameManager = GameState::MENU;
 					}
 				}
 			}
-			else if (manager.getState() == GameManager::GameState::MENU)
+			else if (gameManager == GameState::MENU)
 			{
 				if (gameMenu.doEvent(evItem, mainWindow))
 				{
 					// очистить поле установить размер и начать игру
 					score = 0;
-					scoreText.setString("Score:\n" + to_string(score));
+					updateScore();
 
 					switch (gameMenu.getSize())
 					{
@@ -108,18 +113,18 @@ namespace GameSpace
 
 					scoreText.setPosition(Vector2f((fieldWidth + 1.f)*Primitive::blockSize, 4.f * Primitive::blockSize));
 
-					manager.setState(GameManager::GameState::PLAY);
+					gameManager = GameState::PLAY;
 				}
 			}
-			else if (manager.getState() == GameManager::GameState::PAUSE)
+			else if (gameManager == GameState::PAUSE)
 			{
 				if (evItem.type == Event::KeyPressed && evItem.key.code == Keyboard::Pause)
-					manager.setState(GameManager::GameState::PLAY);
+					gameManager = GameState::PLAY;
 			}
-			else if (manager.getState() == GameManager::GameState::LOSE)
+			else if (gameManager == GameState::LOSE)
 			{
 				if (evItem.type == Event::MouseButtonPressed)
-					manager.setState(GameManager::GameState::MENU);
+					gameManager = GameState::MENU;
 			}
 		}
 	}
@@ -127,7 +132,7 @@ namespace GameSpace
 	void Game::doDraw()
 	{
 		mainWindow.draw(backgroundSprite);
-		if (manager.getState() == GameManager::GameState::PLAY)
+		if (gameManager == GameState::PLAY)
 		{
 			if (playerBlock)
 			{
@@ -140,11 +145,11 @@ namespace GameSpace
 				mainWindow.draw(scoreText);
 			}
 		}
-		else if (manager.getState() == GameManager::GameState::MENU)
+		else if (gameManager == GameState::MENU)
 		{
 			gameMenu.doDraw(mainWindow);
 		}
-		else if (manager.getState() == GameManager::GameState::PAUSE)
+		else if (gameManager == GameState::PAUSE)
 		{
 			if (playerBlock)
 			{
@@ -158,7 +163,7 @@ namespace GameSpace
 			}
 			mainWindow.draw(pauseText);
 		}
-		else if (manager.getState() == GameManager::GameState::LOSE)
+		else if (gameManager == GameState::LOSE)
 		{
 			mainWindow.draw(loseText);
 		}
@@ -171,7 +176,7 @@ namespace GameSpace
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doLogic()
 	{
-		if (manager.getState() == GameManager::GameState::PLAY)
+		if (gameManager == GameState::PLAY)
 		{
 			if (playerBlock)
 			{
@@ -179,7 +184,7 @@ namespace GameSpace
 				{
 					if (gameField.isFinal())
 					{
-						manager.setState(GameManager::GameState::LOSE);
+						gameManager = GameState::LOSE;
 					}
 					else
 					{
@@ -189,47 +194,21 @@ namespace GameSpace
 				}
 				if (gameField.erasing())
 				{
-					score += 100;
-					scoreText.setString("Score:\n" + to_string(score));
+					score += 15;
+					updateScore();
 				}
 			}
-		}
-		else if (manager.getState() == GameManager::GameState::MENU)
-		{
-
-		}
-		else if (manager.getState() == GameManager::GameState::PAUSE)
-		{
-
-		}
-		else if (manager.getState() == GameManager::GameState::LOSE)
-		{
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doWork()
 	{
-/*
-		mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0f, fieldHeight*Primitive::blockSize / 2.0f));
-		backgroundSprite.setPosition(Vector2f(mainView.getCenter().x - mainView.getSize().x / 2.0f, mainView.getCenter().y - mainView.getSize().y / 2.0f));
-		loseText.setPosition(Vector2f(mainView.getCenter().x - (loseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (loseText.getLocalBounds().height / 2.0f)));
-		pauseText.setPosition(Vector2f(mainView.getCenter().x - (pauseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (pauseText.getLocalBounds().height / 2.0f)));
-
-		playerBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
-		gameField = Field(fieldWidth, fieldHeight);*/
-		/*
-		mainWindow.setSize(Vector2u(fieldWidth*Primitive::blockSize, fieldHeight*Primitive::blockSize));
-		mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0, fieldHeight*Primitive::blockSize / 2.0));
-		mainView.setSize(Vector2f(fieldWidth*Primitive::blockSize, fieldHeight*Primitive::blockSize));
-		*/
-
 		Clock gameTime;
 
 		while (mainWindow.isOpen())
 		{
 			if (gameTime.getElapsedTime().asSeconds() > 1 || 
-				(manager.isPlay() && gameTime.getElapsedTime().asMilliseconds() > 50 && Keyboard::isKeyPressed(Keyboard::Down)))
+				(gameManager == GameState::PLAY && gameTime.getElapsedTime().asMilliseconds() > 50 && Keyboard::isKeyPressed(Keyboard::Down)))
 			{
 				doLogic();
 				gameTime.restart();

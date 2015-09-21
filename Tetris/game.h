@@ -9,7 +9,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "menu.h"
-#include "gamemanager.h"
 #include "primitive.h"
 
 namespace GameSpace
@@ -32,10 +31,11 @@ namespace GameSpace
 		std::unique_ptr<Primitive> playerBlock;
 		std::unique_ptr<Primitive> nextBlock;
 		Field gameField;
-		GameManager manager;
+		enum class GameState{ MENU, PAUSE, PLAY, LOSE } gameManager;
 		Menu gameMenu;
 		int fieldWidth, fieldHeight;
 		int score;
+		void updateScore();
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 	public:
