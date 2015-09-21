@@ -28,6 +28,7 @@ namespace GameSpace
 		void doView();
 		void doLogic();
 		std::unique_ptr<Primitive> playerBlock;
+		std::unique_ptr<Primitive> nextBlock;
 		Field gameField;
 		GameManager manager;
 		Menu gameMenu;

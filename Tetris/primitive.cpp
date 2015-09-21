@@ -226,12 +226,17 @@ namespace GameSpace
 	//////////////////////////////////////////////////////////////////////////
 	void Primitive::doDraw(sf::RenderWindow& render)
 	{
+		doDrawAt(render, posX, posY);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Primitive::doDrawAt(sf::RenderWindow& render, int positionX, int positionY)
+	{
 		for (size_t y = 0; y < scheme.size(); y++)
 		{
 			for (size_t x = 0; x < scheme[y].size(); x++)
 			{
 				if (scheme[y][x] != BlockColor::EMPTY)
-					drawBlock(render, posX + x, posY + y, scheme[y][x]);
+					drawBlock(render, positionX + x, positionY + y, scheme[y][x]);
 			}
 		}
 	}

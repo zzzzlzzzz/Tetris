@@ -86,6 +86,8 @@ namespace GameSpace
 					}
 
 					playerBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
+					nextBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
+
 					gameField = Field(fieldWidth, fieldHeight);
 
 					mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0f, fieldHeight*Primitive::blockSize / 2.0f));
@@ -118,6 +120,9 @@ namespace GameSpace
 			{
 				playerBlock->doDraw(mainWindow);
 				gameField.doDraw(mainWindow);
+
+				if (nextBlock)
+					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
 			}
 		}
 		else if (manager.getState() == GameManager::GameState::MENU)
@@ -130,6 +135,9 @@ namespace GameSpace
 			{
 				playerBlock->doDraw(mainWindow);
 				gameField.doDraw(mainWindow);
+
+				if (nextBlock)
+					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
 			}
 			mainWindow.draw(pauseText);
 		}
@@ -158,7 +166,8 @@ namespace GameSpace
 					}
 					else
 					{
-						playerBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
+						playerBlock.swap(nextBlock);
+						nextBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
 					}
 				}
 				gameField.erasing();

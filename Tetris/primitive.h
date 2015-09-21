@@ -30,6 +30,7 @@ namespace GameSpace
 		void rotLeft(Field& field);
 		void moveRight(Field& field);
 		void moveLeft(Field& field);
+		void doDrawAt(sf::RenderWindow& render, int positionX, int positionY);
 	protected:
 		std::vector<std::vector<BlockColor>> scheme;
 		int posX, posY, state;
