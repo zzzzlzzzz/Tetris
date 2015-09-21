@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "gamemanager.h"
 #include "primitive.h"
 
 namespace GameSpace
@@ -16,12 +17,21 @@ namespace GameSpace
 		std::default_random_engine dre;
 		sf::RenderWindow mainWindow;
 		sf::View mainView;
+		sf::Texture backgroundTexture;
+		sf::Sprite backgroundSprite;
+		sf::Font infoFont;
+		sf::Text loseText;
+		sf::Text pauseText;
 		void doEvent();
 		void doDraw();
 		void doView();
 		void doLogic();
 		std::unique_ptr<Primitive> playerBlock;
 		Field gameField;
+		GameManager manager;
+		int fieldWidth, fieldHeight;
+		Game(const Game&) = delete;
+		Game& operator=(const Game&) = delete;
 	public:
 		Game(int width, int height, bool fullScreen);
 		~Game() = default;
