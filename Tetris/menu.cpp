@@ -4,9 +4,10 @@ using namespace sf;
 
 namespace GameSpace
 {
-	Menu::Menu() :selSize(FieldSize::STANDART)
+	Menu::Menu(const std::string& fontPath) :selSize(FieldSize::STANDART)
 	{
-		menuFont.loadFromFile("resource\\gamefont.ttf");
+		if (!menuFont.loadFromFile(fontPath))
+			throw std::runtime_error("GameSpace::Menu::Menu !menuFont.loadFromFile(\"resource\\gamefont.ttf\")");
 
 		menuItemSizeMin.setFont(menuFont);
 		menuItemSizeMin.setString("Minimal size");

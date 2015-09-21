@@ -1,6 +1,9 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include <string>
+#include <stdexcept>
+
 #include <SFML/Graphics.hpp>
 
 namespace GameSpace
@@ -19,7 +22,7 @@ namespace GameSpace
 		sf::Text description;
 		FieldSize selSize;
 	public:
-		Menu();
+		Menu(const std::string& fontPath);
 		void doDraw(sf::RenderWindow& render);
 		bool doEvent(const sf::Event& evItem, sf::RenderWindow& render);
 		FieldSize getSize(){ return selSize; }
