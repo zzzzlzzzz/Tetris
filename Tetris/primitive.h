@@ -46,7 +46,7 @@ namespace GameSpace
 		bool isEmpty(int x, int y);
 		void setColor(int x, int y, Primitive::BlockColor color);
 		bool isFinal();
-		bool erasing();
+		int erasing();
 	};
 
 	class Point:public Primitive

@@ -192,9 +192,9 @@ namespace GameSpace
 						nextBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
 					}
 				}
-				if (gameField.erasing())
+				if (int cnt = gameField.erasing())
 				{
-					score += 15;
+					score += (cnt * 15);
 					updateScore();
 				}
 			}

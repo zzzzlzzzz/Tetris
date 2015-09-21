@@ -58,9 +58,9 @@ namespace GameSpace
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Field::erasing()
+	int Field::erasing()
 	{
-		bool modified = false;
+		int eraseCount = 0;
 		for (size_t y = 0; y < field.size() - 1; y++)
 		{
 			bool haveLine = true;
@@ -71,7 +71,7 @@ namespace GameSpace
 			}
 			if (haveLine)
 			{
-				modified = true;
+				++eraseCount;
 				for (int iy = static_cast<int>(y); iy > 0; iy--)
 				{
 					for (size_t x = 1; x < field[y].size() - 1; x++)
@@ -82,7 +82,7 @@ namespace GameSpace
 				}
 			}
 		}
-		return modified;
+		return eraseCount;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
