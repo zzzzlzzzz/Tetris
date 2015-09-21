@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "menu.h"
 #include "gamemanager.h"
 #include "primitive.h"
 
@@ -29,6 +30,7 @@ namespace GameSpace
 		std::unique_ptr<Primitive> playerBlock;
 		Field gameField;
 		GameManager manager;
+		Menu gameMenu;
 		int fieldWidth, fieldHeight;
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;

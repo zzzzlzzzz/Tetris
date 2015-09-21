@@ -17,7 +17,6 @@ namespace GameSpace
 		//////////////////////////////////////////////////////////////////////////
 		backgroundTexture.loadFromFile("resource\\background.png");
 		backgroundSprite.setTexture(backgroundTexture);
-		backgroundSprite.setPosition(Vector2f(0, 0));
 		backgroundSprite.scale(Vector2f(width / 640.0f, height / 480.0f));
 		//////////////////////////////////////////////////////////////////////////
 		infoFont.loadFromFile("resource\\gamefont.ttf");
@@ -27,14 +26,12 @@ namespace GameSpace
 		loseText.setCharacterSize(48);
 		loseText.setColor(Color(0xCC, 0x00, 0x33));
 		loseText.setStyle(sf::Text::Bold);
-		loseText.setPosition(Vector2f(width / 2.0f - (loseText.getLocalBounds().width / 2.0f), height / 2.0f - (loseText.getLocalBounds().height / 2.0f)));
 
 		pauseText.setFont(infoFont);
 		pauseText.setString("Pause");
 		pauseText.setCharacterSize(48);
 		pauseText.setColor(Color(0xCC, 0x00, 0x33));
 		pauseText.setStyle(sf::Text::Bold);
-		pauseText.setPosition(Vector2f(width / 2.0f - (pauseText.getLocalBounds().width / 2.0f), height / 2.0f - (pauseText.getLocalBounds().height / 2.0f)));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doEvent()
@@ -61,12 +58,43 @@ namespace GameSpace
 							playerBlock->moveLeft(gameField);
 						else if (evItem.key.code == Keyboard::Pause)
 							manager.setState(GameManager::GameState::PAUSE);
+						else if (evItem.key.code == Keyboard::Escape)
+							manager.setState(GameManager::GameState::MENU);
 					}
 				}
 			}
 			else if (manager.getState() == GameManager::GameState::MENU)
 			{
+				if (gameMenu.doEvent(evItem, mainWindow))
+				{
+					// очистить поле установить размер и начать игру
+					switch (gameMenu.getSize())
+					{
+					case Menu::FieldSize::MINIMAL:
+						fieldWidth = 10;
+						fieldHeight = 10;
+						break;
+					case Menu::FieldSize::MAXIMAL:
+						fieldWidth = 20;
+						fieldHeight = 20;
+						break;
+					default:
+					case Menu::FieldSize::STANDART:
+						fieldWidth = 15;
+						fieldHeight = 15;
+						break;
+					}
 
+					playerBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
+					gameField = Field(fieldWidth, fieldHeight);
+
+					mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0f, fieldHeight*Primitive::blockSize / 2.0f));
+					backgroundSprite.setPosition(Vector2f(mainView.getCenter().x - mainView.getSize().x / 2.0f, mainView.getCenter().y - mainView.getSize().y / 2.0f));
+					loseText.setPosition(Vector2f(mainView.getCenter().x - (loseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (loseText.getLocalBounds().height / 2.0f)));
+					pauseText.setPosition(Vector2f(mainView.getCenter().x - (pauseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (pauseText.getLocalBounds().height / 2.0f)));
+
+					manager.setState(GameManager::GameState::PLAY);
+				}
 			}
 			else if (manager.getState() == GameManager::GameState::PAUSE)
 			{
@@ -94,7 +122,7 @@ namespace GameSpace
 		}
 		else if (manager.getState() == GameManager::GameState::MENU)
 		{
-
+			gameMenu.doDraw(mainWindow);
 		}
 		else if (manager.getState() == GameManager::GameState::PAUSE)
 		{
@@ -152,8 +180,14 @@ namespace GameSpace
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doWork()
 	{
+/*
+		mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0f, fieldHeight*Primitive::blockSize / 2.0f));
+		backgroundSprite.setPosition(Vector2f(mainView.getCenter().x - mainView.getSize().x / 2.0f, mainView.getCenter().y - mainView.getSize().y / 2.0f));
+		loseText.setPosition(Vector2f(mainView.getCenter().x - (loseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (loseText.getLocalBounds().height / 2.0f)));
+		pauseText.setPosition(Vector2f(mainView.getCenter().x - (pauseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (pauseText.getLocalBounds().height / 2.0f)));
+
 		playerBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
-		gameField = Field(fieldWidth, fieldHeight);
+		gameField = Field(fieldWidth, fieldHeight);*/
 		/*
 		mainWindow.setSize(Vector2u(fieldWidth*Primitive::blockSize, fieldHeight*Primitive::blockSize));
 		mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0, fieldHeight*Primitive::blockSize / 2.0));
