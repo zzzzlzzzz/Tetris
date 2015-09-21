@@ -11,7 +11,7 @@ namespace GameSpace
 		:	dre(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())),
 			mainWindow(VideoMode(width, height), "Tetris", fullScreen ? Style::Fullscreen : Style::Default),
 			mainView(FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))),
-			gameMenu("resource\\gamefont.ttf"), fieldWidth(10), fieldHeight(10)
+			gameMenu("resource\\gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0)
 	{
 		mainWindow.setFramerateLimit(60);
 		//////////////////////////////////////////////////////////////////////////
@@ -27,13 +27,19 @@ namespace GameSpace
 		loseText.setString("Game Over");
 		loseText.setCharacterSize(48);
 		loseText.setColor(Color(0xCC, 0x00, 0x33));
-		loseText.setStyle(sf::Text::Bold);
+		loseText.setStyle(Text::Bold);
 
 		pauseText.setFont(infoFont);
 		pauseText.setString("Pause");
 		pauseText.setCharacterSize(48);
 		pauseText.setColor(Color(0xCC, 0x00, 0x33));
-		pauseText.setStyle(sf::Text::Bold);
+		pauseText.setStyle(Text::Bold);
+
+		scoreText.setFont(infoFont);
+		scoreText.setString("Score:\n"+to_string(score));
+		scoreText.setCharacterSize(20);
+		scoreText.setColor(Color(0xCC, 0x00, 0x33));
+		scoreText.setStyle(Text::Bold);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doEvent()
@@ -70,6 +76,9 @@ namespace GameSpace
 				if (gameMenu.doEvent(evItem, mainWindow))
 				{
 					// очистить поле установить размер и начать игру
+					score = 0;
+					scoreText.setString("Score:\n" + to_string(score));
+
 					switch (gameMenu.getSize())
 					{
 					case Menu::FieldSize::MINIMAL:
@@ -96,6 +105,8 @@ namespace GameSpace
 					backgroundSprite.setPosition(Vector2f(mainView.getCenter().x - mainView.getSize().x / 2.0f, mainView.getCenter().y - mainView.getSize().y / 2.0f));
 					loseText.setPosition(Vector2f(mainView.getCenter().x - (loseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (loseText.getLocalBounds().height / 2.0f)));
 					pauseText.setPosition(Vector2f(mainView.getCenter().x - (pauseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (pauseText.getLocalBounds().height / 2.0f)));
+
+					scoreText.setPosition(Vector2f((fieldWidth + 1.f)*Primitive::blockSize, 4.f * Primitive::blockSize));
 
 					manager.setState(GameManager::GameState::PLAY);
 				}
@@ -125,6 +136,8 @@ namespace GameSpace
 
 				if (nextBlock)
 					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
+
+				mainWindow.draw(scoreText);
 			}
 		}
 		else if (manager.getState() == GameManager::GameState::MENU)
@@ -140,6 +153,8 @@ namespace GameSpace
 
 				if (nextBlock)
 					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
+
+				mainWindow.draw(scoreText);
 			}
 			mainWindow.draw(pauseText);
 		}
@@ -172,7 +187,11 @@ namespace GameSpace
 						nextBlock.reset(getPrimitive(dre, static_cast<int>((fieldWidth - 2) / 2.0), 0));
 					}
 				}
-				gameField.erasing();
+				if (gameField.erasing())
+				{
+					score += 100;
+					scoreText.setString("Score:\n" + to_string(score));
+				}
 			}
 		}
 		else if (manager.getState() == GameManager::GameState::MENU)

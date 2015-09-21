@@ -46,7 +46,7 @@ namespace GameSpace
 		bool isEmpty(int x, int y);
 		void setColor(int x, int y, Primitive::BlockColor color);
 		bool isFinal();
-		void erasing();
+		bool erasing();
 	};
 
 	class Point:public Primitive
@@ -83,6 +83,12 @@ namespace GameSpace
 	{
 	public:
 		ZigZag(std::default_random_engine& dre, int positionX, int positionY);
+	};
+
+	class ZigZag2 :public Primitive
+	{
+	public:
+		ZigZag2(std::default_random_engine& dre, int positionX, int positionY);
 	};
 
 	class Line :public Primitive

@@ -24,6 +24,7 @@ namespace GameSpace
 		sf::Font infoFont;
 		sf::Text loseText;
 		sf::Text pauseText;
+		sf::Text scoreText;
 		void doEvent();
 		void doDraw();
 		void doView();
@@ -34,6 +35,7 @@ namespace GameSpace
 		GameManager manager;
 		Menu gameMenu;
 		int fieldWidth, fieldHeight;
+		int score;
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 	public:

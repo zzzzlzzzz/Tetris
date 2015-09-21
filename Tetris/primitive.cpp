@@ -58,8 +58,9 @@ namespace GameSpace
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Field::erasing()
+	bool Field::erasing()
 	{
+		bool modified = false;
 		for (size_t y = 0; y < field.size() - 1; y++)
 		{
 			bool haveLine = true;
@@ -70,6 +71,7 @@ namespace GameSpace
 			}
 			if (haveLine)
 			{
+				modified = true;
 				for (int iy = static_cast<int>(y); iy > 0; iy--)
 				{
 					for (size_t x = 1; x < field[y].size() - 1; x++)
@@ -80,6 +82,7 @@ namespace GameSpace
 				}
 			}
 		}
+		return modified;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -492,6 +495,17 @@ namespace GameSpace
 
 	//////////////////////////////////////////////////////////////////////////
 
+	ZigZag2::ZigZag2(std::default_random_engine& dre, int positionX, int positionY)
+		:Primitive({	{ true, true, false },
+						{ false, true, true },
+						{ false, false, false } },
+						dre, positionX, positionY)
+	{
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
 	Line::Line(std::default_random_engine& dre, int positionX, int positionY)
 		:Primitive({	{ true, true, true },
 						{ false, false, false },
@@ -505,7 +519,7 @@ namespace GameSpace
 
 	Primitive* getPrimitive(std::default_random_engine& dre, int positionX, int positionY)
 	{
-		switch (uniform_int_distribution<int>(0, 6)(dre))
+		switch (uniform_int_distribution<int>(0, 7)(dre))
 		{
 		case 0:
 			return new Point(dre, positionX, positionY);
@@ -520,6 +534,8 @@ namespace GameSpace
 		case 5:
 			return new ZigZag(dre, positionX, positionY);
 		case 6:
+			return new ZigZag2(dre, positionX, positionY);
+		case 7:
 			return new Line(dre, positionX, positionY);
 		default:
 			return nullptr;
