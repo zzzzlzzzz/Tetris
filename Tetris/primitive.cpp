@@ -12,11 +12,11 @@ namespace GameSpace
 	{
 		for (int y = 0; y < height; y++)
 		{
-			field[y][0] = Primitive::BlockColor::YELLOW;
-			field[y][width - 1] = Primitive::BlockColor::YELLOW;
+			field[y][0] = Primitive::BlockColor::C999999;
+			field[y][width - 1] = Primitive::BlockColor::C999999;
 		}
 		for (int x = 1; x < width - 1; x++)
-			field[height - 1][x] = Primitive::BlockColor::YELLOW;
+			field[height - 1][x] = Primitive::BlockColor::C999999;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Field::doDraw(sf::RenderWindow& render)
@@ -87,17 +87,26 @@ namespace GameSpace
 		:posX(positionX), posY(positionY), state(0)
 	{
 		BlockColor schemeColor;
-		switch (uniform_int_distribution<int>(0,2)(dre))
+		switch (uniform_int_distribution<int>(0,16)(dre))
 		{
-		case 0:
-			schemeColor = BlockColor::RED;
-			break;
-		case 1:
-			schemeColor = BlockColor::GREEN;
-			break;
-		case 2:
-			schemeColor = BlockColor::BLUE;
-			break;
+		case 0: schemeColor = BlockColor::RED; break;
+		case 1: schemeColor = BlockColor::GREEN; break;
+		case 2: schemeColor = BlockColor::BLUE; break;
+		case 3: schemeColor = BlockColor::YELLOW; break;
+		case 4: schemeColor = BlockColor::CFFFF66; break;
+		case 5: schemeColor = BlockColor::CFFCC33; break;
+		case 6: schemeColor = BlockColor::CFF6600; break;
+		case 7: schemeColor = BlockColor::CFF0066; break;
+		case 8: schemeColor = BlockColor::CFF0099; break;
+		case 9: schemeColor = BlockColor::CCC00CC; break;
+		case 10: schemeColor = BlockColor::C6600CC; break;
+		case 11: schemeColor = BlockColor::C3300CC; break;
+		case 12: schemeColor = BlockColor::C00CCFF; break;
+		case 13: schemeColor = BlockColor::C33FFCC; break;
+		case 14: schemeColor = BlockColor::C33FF66; break;
+		case 15: schemeColor = BlockColor::C33FF00; break;
+		case 16: schemeColor = BlockColor::CCCFF33; break;
+/*		case 17: schemeColor = BlockColor::C999999; break;*/// для игрового стакана
 		default:
 			schemeColor = BlockColor::EMPTY;
 			break;
@@ -138,6 +147,76 @@ namespace GameSpace
 		case BlockColor::YELLOW:
 			rshape.setFillColor(Color::Yellow);
 			rshape.setOutlineColor(Color::Yellow);
+			render.draw(rshape);
+			break;
+		case BlockColor::CFFFF66:
+			rshape.setFillColor(Color(0xFF, 0xFF, 0x66));
+			rshape.setOutlineColor(Color(0xFF, 0xFF, 0x66));
+			render.draw(rshape);
+			break;
+		case BlockColor::CFFCC33:
+			rshape.setFillColor(Color(0xFF, 0xCC, 0x33));
+			rshape.setOutlineColor(Color(0xFF, 0xCC, 0x33));
+			render.draw(rshape);
+			break;
+		case BlockColor::CFF6600:
+			rshape.setFillColor(Color(0xFF, 0x66, 0x00));
+			rshape.setOutlineColor(Color(0xFF, 0x66, 0x00));
+			render.draw(rshape);
+			break;
+		case BlockColor::CFF0066:
+			rshape.setFillColor(Color(0xFF, 0x00, 0x66));
+			rshape.setOutlineColor(Color(0xFF, 0x00, 0x66));
+			render.draw(rshape);
+			break;
+		case BlockColor::CFF0099:
+			rshape.setFillColor(Color(0xFF, 0x00, 0x99));
+			rshape.setOutlineColor(Color(0xFF, 0x00, 0x99));
+			render.draw(rshape);
+			break;
+		case BlockColor::CCC00CC:
+			rshape.setFillColor(Color(0xCC, 0x00, 0xCC));
+			rshape.setOutlineColor(Color(0xCC, 0x00, 0xCC));
+			render.draw(rshape);
+			break;
+		case BlockColor::C6600CC:
+			rshape.setFillColor(Color(0x66, 0x00, 0xCC));
+			rshape.setOutlineColor(Color(0x66, 0x00, 0xCC));
+			render.draw(rshape);
+			break;
+		case BlockColor::C3300CC:
+			rshape.setFillColor(Color(0x33, 0x00, 0xCC));
+			rshape.setOutlineColor(Color(0x33, 0x00, 0xCC));
+			render.draw(rshape);
+			break;
+		case BlockColor::C00CCFF:
+			rshape.setFillColor(Color(0x00, 0xCC, 0xFF));
+			rshape.setOutlineColor(Color(0x00, 0xCC, 0xFF));
+			render.draw(rshape);
+			break;
+		case BlockColor::C33FFCC:
+			rshape.setFillColor(Color(0x33, 0xFF, 0xCC));
+			rshape.setOutlineColor(Color(0x33, 0xFF, 0xCC));
+			render.draw(rshape);
+			break;
+		case BlockColor::C33FF66:
+			rshape.setFillColor(Color(0x33, 0xFF, 0x66));
+			rshape.setOutlineColor(Color(0x33, 0xFF, 0x66));
+			render.draw(rshape);
+			break;
+		case BlockColor::C33FF00:
+			rshape.setFillColor(Color(0x33, 0xFF, 0x00));
+			rshape.setOutlineColor(Color(0x33, 0xFF, 0x00));
+			render.draw(rshape);
+			break;
+		case BlockColor::CCCFF33:
+			rshape.setFillColor(Color(0xCC, 0xFF, 0x33));
+			rshape.setOutlineColor(Color(0xCC, 0xFF, 0x33));
+			render.draw(rshape);
+			break;
+		case BlockColor::C999999:
+			rshape.setFillColor(Color(0x99, 0x99, 0x99));
+			rshape.setOutlineColor(Color(0x99, 0x99, 0x99));
 			render.draw(rshape);
 			break;
 		default:

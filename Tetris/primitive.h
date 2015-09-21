@@ -16,7 +16,10 @@ namespace GameSpace
 		void normalize();
 	public:
 		//////////////////////////////////////////////////////////////////////////
-		enum class BlockColor{ EMPTY, RED, GREEN, BLUE, YELLOW };
+		enum class BlockColor{ EMPTY, RED, GREEN, BLUE, YELLOW, 
+								CFFFF66, CFFCC33, CFF6600, CFF0066, CFF0099, 
+								CCC00CC, C6600CC, C3300CC, C00CCFF, C33FFCC, 
+								C33FF66, C33FF00, CCCFF33, C999999 };
 		static const int blockSize = 20;
 		static void drawBlock(sf::RenderWindow& render, int positionX, int positionY, BlockColor color);
 		//////////////////////////////////////////////////////////////////////////
