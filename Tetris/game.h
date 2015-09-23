@@ -23,7 +23,9 @@ namespace GameSpace
 		sf::Font infoFont;
 		sf::Text loseText;
 		sf::Text pauseText;
+		sf::Text statusText;
 		sf::Text scoreText;
+		sf::Text levelText;
 		void doEvent();
 		void doDraw();
 		void doView();
@@ -31,11 +33,17 @@ namespace GameSpace
 		std::unique_ptr<Primitive> playerBlock;
 		std::unique_ptr<Primitive> nextBlock;
 		Field gameField;
-		enum class GameState{ MENU, PAUSE, PLAY, LOSE } gameManager;
+		enum class GameState{ MENU, PAUSE, PLAY, LOSE, WIN } gameManager;
 		Menu gameMenu;
 		int fieldWidth, fieldHeight;
 		int score;
+		int currentLevel;	// текущий уровень
+		const int levelUpScore;	// количество очков, после которых будет повышен уровень
+		const int maximalLevel;	// максимальный уровень, после которого будет победа
+		const int bonusPerLine;	// количество очков за линию
 		void updateScore();
+		void updateLevel();
+		void updateStatus(const std::string& text);
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 	public:

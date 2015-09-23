@@ -11,7 +11,7 @@ namespace GameSpace
 		:	dre(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())),
 			mainWindow(VideoMode(width, height), "Tetris", fullScreen ? Style::Fullscreen : Style::Default),
 			mainView(FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))),
-			gameMenu("resource/gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), gameManager(GameState::MENU)
+			gameMenu("resource/gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), currentLevel(0), levelUpScore(100), maximalLevel(5), bonusPerLine(15), gameManager(GameState::MENU)
 	{
 		mainWindow.setFramerateLimit(60);
 		//////////////////////////////////////////////////////////////////////////
@@ -23,28 +23,38 @@ namespace GameSpace
 		if(!infoFont.loadFromFile("resource/gamefont.ttf"))
 			throw runtime_error("GameSpace::Game::Game !infoFont.loadFromFile(\"resource/gamefont.ttf\")");
 
-		loseText.setFont(infoFont);
-		loseText.setString("Game Over");
-		loseText.setCharacterSize(48);
-		loseText.setColor(Color(0xCC, 0x00, 0x33));
-		loseText.setStyle(Text::Bold);
-
-		pauseText.setFont(infoFont);
-		pauseText.setString("Pause");
-		pauseText.setCharacterSize(48);
-		pauseText.setColor(Color(0xCC, 0x00, 0x33));
-		pauseText.setStyle(Text::Bold);
+		statusText.setFont(infoFont);
+		statusText.setCharacterSize(48);
+		statusText.setColor(Color(0xCC, 0x00, 0x33));
+		statusText.setStyle(Text::Bold);
 
 		scoreText.setFont(infoFont);
 		scoreText.setCharacterSize(20);
 		scoreText.setColor(Color(0xCC, 0x00, 0x33));
 		scoreText.setStyle(Text::Bold);
 		updateScore();
+
+		levelText.setFont(infoFont);
+		levelText.setCharacterSize(20);
+		levelText.setColor(Color(0xCC, 0x00, 0x33));
+		levelText.setStyle(Text::Bold);
+		updateLevel();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::updateScore()
 	{
 		scoreText.setString("Score:\n" + to_string(score));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::updateLevel()
+	{
+		levelText.setString("Level:\n" + to_string(currentLevel));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::updateStatus(const std::string& text)
+	{
+		statusText.setString(text);
+		statusText.setPosition(Vector2f(mainView.getCenter().x - (statusText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (statusText.getLocalBounds().height / 2.0f)));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::doEvent()
@@ -70,7 +80,10 @@ namespace GameSpace
 						else if (evItem.key.code == Keyboard::Left)
 							playerBlock->moveLeft(gameField);
 						else if (evItem.key.code == Keyboard::Pause)
+						{
+							updateStatus("Pause");
 							gameManager = GameState::PAUSE;
+						}
 						else if (evItem.key.code == Keyboard::Escape)
 							gameManager = GameState::MENU;
 					}
@@ -83,6 +96,9 @@ namespace GameSpace
 					// очистить поле установить размер и начать игру
 					score = 0;
 					updateScore();
+
+					currentLevel = 0;
+					updateLevel();
 
 					switch (gameMenu.getSize())
 					{
@@ -108,10 +124,9 @@ namespace GameSpace
 
 					mainView.setCenter(Vector2f(fieldWidth*Primitive::blockSize / 2.0f, fieldHeight*Primitive::blockSize / 2.0f));
 					backgroundSprite.setPosition(Vector2f(mainView.getCenter().x - mainView.getSize().x / 2.0f, mainView.getCenter().y - mainView.getSize().y / 2.0f));
-					loseText.setPosition(Vector2f(mainView.getCenter().x - (loseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (loseText.getLocalBounds().height / 2.0f)));
-					pauseText.setPosition(Vector2f(mainView.getCenter().x - (pauseText.getLocalBounds().width / 2.0f), mainView.getCenter().y - (pauseText.getLocalBounds().height / 2.0f)));
-
+					
 					scoreText.setPosition(Vector2f((fieldWidth + 1.f)*Primitive::blockSize, 4.f * Primitive::blockSize));
+					levelText.setPosition(Vector2f((fieldWidth + 1.f)*Primitive::blockSize, scoreText.getGlobalBounds().top + scoreText.getGlobalBounds().height + 10));
 
 					gameManager = GameState::PLAY;
 				}
@@ -121,7 +136,7 @@ namespace GameSpace
 				if (evItem.type == Event::KeyPressed && evItem.key.code == Keyboard::Pause)
 					gameManager = GameState::PLAY;
 			}
-			else if (gameManager == GameState::LOSE)
+			else if (gameManager == GameState::LOSE || gameManager == GameState::WIN)
 			{
 				if (evItem.type == Event::MouseButtonPressed)
 					gameManager = GameState::MENU;
@@ -143,6 +158,7 @@ namespace GameSpace
 					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
 
 				mainWindow.draw(scoreText);
+				mainWindow.draw(levelText);
 			}
 		}
 		else if (gameManager == GameState::MENU)
@@ -160,12 +176,17 @@ namespace GameSpace
 					nextBlock->doDrawAt(mainWindow, fieldWidth + 1, 0);
 
 				mainWindow.draw(scoreText);
+				mainWindow.draw(levelText);
 			}
-			mainWindow.draw(pauseText);
+			mainWindow.draw(statusText);
 		}
 		else if (gameManager == GameState::LOSE)
 		{
-			mainWindow.draw(loseText);
+			mainWindow.draw(statusText);
+		}
+		else if (gameManager == GameState::WIN)
+		{
+			mainWindow.draw(statusText);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -184,6 +205,7 @@ namespace GameSpace
 				{
 					if (gameField.isFinal())
 					{
+						updateStatus("Game Over");
 						gameManager = GameState::LOSE;
 					}
 					else
@@ -194,7 +216,19 @@ namespace GameSpace
 				}
 				if (int cnt = gameField.erasing())
 				{
-					score += (cnt * 15);
+					score += (cnt * bonusPerLine);
+
+					if (score >= levelUpScore)
+					{
+						score = 0;
+						if (++currentLevel == maximalLevel)
+						{
+							updateStatus("You Win!");
+							gameManager = GameState::WIN;
+						}
+					}
+
+					updateLevel();
 					updateScore();
 				}
 			}
@@ -207,7 +241,7 @@ namespace GameSpace
 
 		while (mainWindow.isOpen())
 		{
-			if (gameTime.getElapsedTime().asSeconds() > 1 || 
+			if (gameTime.getElapsedTime().asMilliseconds() > (maximalLevel - currentLevel) * 200 ||
 				(gameManager == GameState::PLAY && gameTime.getElapsedTime().asMilliseconds() > 50 && Keyboard::isKeyPressed(Keyboard::Down)))
 			{
 				doLogic();
