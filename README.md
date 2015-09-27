@@ -1,12 +1,26 @@
 # Tetris
 Простой тетрис на SFML
 
+## Правила игры
+
+Возможны три режима игры:
+
+* Игра на малом поле (10 x 10)
+
+* Игра на среднем поле (15 x 15)
+
+* Игра на большом поле (20 x 20)
+
+За построенную горизонтальную линию начисляется 15 очков.
+В случае, когда количество очков превышает 100 повышается уровень и очки обнуляются.
+Чем выше уровень, тем быстрее падают объекты. Для выйгрыша необходимо достичь шестого уровня.
+
 ## Скриншоты
 
 Меню
 
-![Меню тетриса](https://raw.githubusercontent.com/zzzzlzzzz/Tetris/master/screens/menu.png "Меню тетриса")
+![Меню тетриса](https://raw.githubusercontent.com/zzzzlzzzz/Tetris/master/screens/menu.jpg "Меню тетриса")
 
 Игровой процесс
 
-![Игровой процесс](https://raw.githubusercontent.com/zzzzlzzzz/Tetris/master/screens/game.png "Игровой процесс")
+![Игровой процесс](https://raw.githubusercontent.com/zzzzlzzzz/Tetris/master/screens/game.jpg "Игровой процесс")

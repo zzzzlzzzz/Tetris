@@ -11,7 +11,7 @@ namespace GameSpace
 		:	dre(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())),
 			mainWindow(VideoMode(width, height), "Tetris", fullScreen ? Style::Fullscreen : Style::Default),
 			mainView(FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))),
-			gameMenu("resource/gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), currentLevel(0), levelUpScore(100), maximalLevel(5), bonusPerLine(15), gameManager(GameState::MENU)
+			gameManager(GameState::MENU), gameMenu("resource/gamefont.ttf"), fieldWidth(10), fieldHeight(10), score(0), currentLevel(0), levelUpScore(100), maximalLevel(5), bonusPerLine(15)
 	{
 		mainWindow.setFramerateLimit(60);
 		//////////////////////////////////////////////////////////////////////////
